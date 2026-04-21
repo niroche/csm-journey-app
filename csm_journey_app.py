@@ -88,19 +88,21 @@ def create_pdf(df, inputs):
     pdf = PDF()
     pdf.add_page()
     
+    # Helper to make text safe for FPDF Latin-1
+    def safe_text(text):
+        return str(text).encode('latin-1', 'replace').decode('latin-1')
+
     # Intro info
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(0, 10, f"Supplier: {inputs['industry']} ({inputs['supplier_type']})", 0, 1)
-    pdf.cell(0, 10, f"Segment: {inputs['segment']} | Area: {inputs['delivery_area']}", 0, 1)
+    pdf.cell(0, 10, safe_text(f"Supplier: {inputs['industry']} ({inputs['supplier_type']})"), 0, 1)
+    pdf.cell(0, 10, safe_text(f"Segment: {inputs['segment']} | Area: {inputs['delivery_area']}"), 0, 1)
     pdf.ln(5)
     
     for _, row in df.iterrows():
-        pdf.chapter_title(f"{row['Month']} - {row['Focus']}")
-        # Remove markdown bold and replace bullets with simple dashes for PDF compatibility
-        clean_actions = row['Actions'].replace('**', '')
-        # Ensure only Latin-1 characters are used to prevent encoding errors
-        clean_actions = clean_actions.encode('latin-1', 'replace').decode('latin-1')
-        pdf.chapter_body(clean_actions)
+        pdf.chapter_title(safe_text(f"{row['Month']} - {row['Focus']}"))
+        # Clean markdown and encode safely
+        clean_actions = row['Actions'].replace('**', '').replace('- ', '  - ')
+        pdf.chapter_body(safe_text(clean_actions))
         
     return pdf.output(dest='S')
 

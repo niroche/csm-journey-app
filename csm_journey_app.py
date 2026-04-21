@@ -96,8 +96,10 @@ def create_pdf(df, inputs):
     
     for _, row in df.iterrows():
         pdf.chapter_title(f"{row['Month']} - {row['Focus']}")
-        # Remove markdown bold/bullets for PDF plain text
-        clean_actions = row['Actions'].replace('**', '').replace('- ', '• ')
+        # Remove markdown bold and replace bullets with simple dashes for PDF compatibility
+        clean_actions = row['Actions'].replace('**', '')
+        # Ensure only Latin-1 characters are used to prevent encoding errors
+        clean_actions = clean_actions.encode('latin-1', 'replace').decode('latin-1')
         pdf.chapter_body(clean_actions)
         
     return pdf.output(dest='S')

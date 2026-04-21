@@ -104,8 +104,9 @@ def create_pdf(df, inputs):
         clean_actions = row['Actions'].replace('**', '').replace('- ', '  - ')
         pdf.chapter_body(safe_text(clean_actions))
         
-    # In fpdf2, output() without arguments returns the bytes of the PDF
-    return pdf.output()
+    # In fpdf2, output() returns a bytearray; convert to bytes for Streamlit compatibility
+    pdf_output = pdf.output()
+    return bytes(pdf_output)
 
 # --- UI INTERFACE ---
 st.title("🚀 B2B Customer Journey Generator")

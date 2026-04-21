@@ -128,6 +128,7 @@ with st.sidebar:
     delivery_area = st.text_input("Delivery Area", "Europe")
     visibility = st.selectbox("Visibility Scope", ["European", "Worldwide"])
     boosts = st.selectbox("Number of Boosts", [10, 25, 50])
+    target_revenue = st.number_input("Target Annual Revenue ($)", min_value=0, value=50000, step=1000)
     priority_products = st.text_area("Priority Products (to focus on)", "Industrial valves, pumps")
 
 if st.button("Generate Roadmap"):
@@ -138,6 +139,7 @@ if st.button("Generate Roadmap"):
         "delivery_area": delivery_area,
         "visibility": visibility,
         "boosts": boosts,
+        "target_revenue": target_revenue,
         "priority_products": priority_products
     }
     
